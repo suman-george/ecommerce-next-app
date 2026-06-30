@@ -5,14 +5,21 @@ import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
+  secret: process.env.AUTH_SECRET!,
+  session: {
+    strategy: "jwt",
+    maxAge: 10 * 24 * 60 * 60 * 1000,
+  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Github({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
 });

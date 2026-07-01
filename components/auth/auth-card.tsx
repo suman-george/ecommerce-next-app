@@ -25,7 +25,7 @@ const AuthCard = ({
   showSocials,
 }: CardWrapperProps) => {
   return (
-    <Card>
+    <Card className="p-6 w-96 mx-auto">
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardContent>{children}</CardContent>

@@ -1,5 +1,14 @@
 import type { Config } from "tailwindcss";
 
+function withOpacity(variableName: string): any {
+  return ({ opacityValue }: { opacityValue?: number }) => {
+    if (opacityValue !== undefined) {
+      return `color-mix(in oklch, var(${variableName}) ${opacityValue * 100}%, transparent)`;
+    }
+    return `var(${variableName})`;
+  };
+}
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,27 +20,27 @@ const config: Config = {
       colors: {
         border: "var(--border)",
         input: "var(--input)",
-        ring: "var(--ring)",
+        ring: withOpacity("--ring"),
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: withOpacity("--primary"),
           foreground: "var(--primary-foreground)",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
+          DEFAULT: withOpacity("--secondary"),
           foreground: "var(--secondary-foreground)",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
+          DEFAULT: withOpacity("--destructive"),
           foreground: "var(--destructive-foreground)",
         },
         muted: {
-          DEFAULT: "var(--muted)",
+          DEFAULT: withOpacity("--muted"),
           foreground: "var(--muted-foreground)",
         },
         accent: {
-          DEFAULT: "var(--accent)",
+          DEFAULT: withOpacity("--accent"),
           foreground: "var(--accent-foreground)",
         },
         popover: {

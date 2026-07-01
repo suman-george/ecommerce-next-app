@@ -19,7 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", GeistSans.variable)}>
-      <body className={inter.className}>
+      <body
+        className={cn(
+          "px-6 md:px-12 max-w-7xl mx-auto bg-black text-white",
+          inter.className,
+        )}
+      >
         <Nav />
         {children}
       </body>

@@ -5,7 +5,7 @@ import * as z from "zod";
 import React, { useState } from "react";
 import AuthCard from "./auth-card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/types/login-schema";
+import { RegisterSchema } from "@/types/register-schema";
 
 import {
   Field,
@@ -26,38 +26,59 @@ import Link from "next/link";
 import { emailSignIn } from "@/server/actions/email-sign-in";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
+import { emailRegister } from "@/server/actions/email-register";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const form = useForm({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
-  const { execute, status } = useAction(emailSignIn, {
+  const { execute, status } = useAction(emailRegister, {
     onSuccess(data) {
-      console.log(data);
+      console.log(data, "register data");
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     execute(values);
   };
 
   return (
     <AuthCard
-      cardTitle="Welcome back!"
+      cardTitle="Create an account"
       showSocials
-      backButtonHref="/auth/register"
-      backButtonLabel="Create a new account"
+      backButtonHref="/auth/login"
+      backButtonLabel="Already have an account?"
     >
-      <form id="login" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="register" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup className="mt-5">
+          <Controller
+            name="name"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="login-title">Name</FieldLabel>
+                <Input
+                  {...field}
+                  id="login-name"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Name"
+                  type="text"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
           <Controller
             name="email"
             control={form.control}
@@ -106,11 +127,11 @@ const LoginForm = () => {
 
           <Button
             type="submit"
-            form="login"
+            form="register"
             variant={"outline"}
             className={cn(status === "executing" ? "animate-pulse " : "")}
           >
-            Login
+            Register
           </Button>
         </Field>
       </form>
@@ -121,4 +142,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

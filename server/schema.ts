@@ -29,6 +29,8 @@ export const users = pgTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  twoFactorEnabled: boolean("twoFactorEnabled").default(false),
+  role: RoleEnum("roles").default("user"),
 });
 
 export const accounts = pgTable(
@@ -52,6 +54,22 @@ export const accounts = pgTable(
     {
       compoundKey: primaryKey({
         columns: [account.provider, account.providerAccountId],
+      }),
+    },
+  ],
+);
+
+export const emailTokens = pgTable(
+  "email_tokens",
+  {
+    id: text("id").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (emailToken) => [
+    {
+      compositePk: primaryKey({
+        columns: [emailToken.id, emailToken.token],
       }),
     },
   ],

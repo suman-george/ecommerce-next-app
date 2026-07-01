@@ -8,10 +8,12 @@ export default async function Nav() {
   const session = await auth();
   console.log("user", session);
   return (
-    <header>
-      <nav className=" p-4 bg-slate-400">
+    <header className="py-8">
+      <nav className=" ">
         <ul className="flex items-center justify-between">
-          <li>Logo</li>
+          <li>
+            <Link href="/">Ecommerce App</Link>
+          </li>
           {session?.user ? (
             <li>
               <UserButton user={session.user} />

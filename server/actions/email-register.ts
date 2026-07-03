@@ -5,7 +5,7 @@ import db from "../index";
 import { eq } from "drizzle-orm";
 import { users } from "../schema";
 import { RegisterSchema } from "@/types/register-schema";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { generatEmailVerificationToken } from "./tokens";
 import { sendVerificationEmail } from "./emails";
 

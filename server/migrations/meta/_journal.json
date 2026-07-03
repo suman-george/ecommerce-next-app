@@ -36,6 +36,20 @@
       "when": 1782891437211,
       "tag": "0004_smiling_hammerhead",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782892100605,
+      "tag": "0005_slippery_stardust",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782893241931,
+      "tag": "0006_true_invisible_woman",
+      "breakpoints": true
     }
   ]
 }

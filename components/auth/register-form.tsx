@@ -27,6 +27,8 @@ import { emailSignIn } from "@/server/actions/email-sign-in";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import { emailRegister } from "@/server/actions/email-register";
+import FormSuccess from "./form-success";
+import FormError from "./form-error";
 
 const RegisterForm = () => {
   const form = useForm({
@@ -42,8 +44,9 @@ const RegisterForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const { execute, status } = useAction(emailRegister, {
-    onSuccess(data) {
-      console.log(data, "register data");
+    onSuccess({ data }) {
+      if (data?.error) setError(data.error);
+      if (data?.success) setSuccess(data.success);
     },
   });
 
@@ -135,6 +138,8 @@ const RegisterForm = () => {
           </Button>
         </Field>
       </form>
+      {success && <FormSuccess message={success} />}
+      {error && <FormError message={error} />}
       <Button type="button" className="p-0" variant="link">
         <Link href="/auth/reset-password">Forgot Password</Link>
       </Button>

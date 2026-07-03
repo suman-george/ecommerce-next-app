@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import { users } from "../schema";
 import { RegisterSchema } from "@/types/register-schema";
 import bcrypt from "bcrypt";
+import { generatEmailVerificationToken } from "./tokens";
+import { sendVerificationEmail } from "./emails";
 
 const action = createSafeActionClient();
 
@@ -23,6 +25,38 @@ export const emailRegister = action
       //   }
       return { error: "Email already exists" };
     }
+    if (existingUser) {
+      if (!existingUser?.emailVerified) {
+        const verificationToken = await generatEmailVerificationToken(email);
+        if (verificationToken) {
+          await sendVerificationEmail(
+            verificationToken.email,
+            verificationToken.token,
+          );
+        }
+        return {
+          success: "Email Confirmation resent",
+        };
+      }
 
-    return { success: "User created successfully" };
+      return {
+        error: "Email already in use",
+      };
+    }
+
+    await db.insert(users).values({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    const verificationToken = await generatEmailVerificationToken(email);
+    if (verificationToken) {
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+      );
+    }
+
+    return { success: "Confirmation email sent" };
   });

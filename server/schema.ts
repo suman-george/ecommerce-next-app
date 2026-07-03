@@ -14,6 +14,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
+import { createId } from "@paralleldrive/cuid2";
+
 export const RoleEnum = pgEnum("roles", ["user", "admin"]);
 
 export const posts = pgTable("posts", {
@@ -24,10 +26,11 @@ export const posts = pgTable("posts", {
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .$defaultFn(() => createId()),
   name: text("name"),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
+  password: text("password"),
   image: text("image"),
   twoFactorEnabled: boolean("twoFactorEnabled").default(false),
   role: RoleEnum("roles").default("user"),
@@ -62,9 +65,12 @@ export const accounts = pgTable(
 export const emailTokens = pgTable(
   "email_tokens",
   {
-    id: text("id").notNull(),
+    id: text("id")
+      .notNull()
+      .$defaultFn(() => createId()),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+    email: text("email").notNull(),
   },
   (emailToken) => [
     {

@@ -40,7 +40,7 @@ const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const { execute, status } = useAction(emailSignIn, {
-    onSuccess(data) {
+    onSuccess({ data }) {
       console.log(data);
     },
   });

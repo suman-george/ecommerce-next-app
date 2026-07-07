@@ -26,6 +26,8 @@ import Link from "next/link";
 import { emailSignIn } from "@/server/actions/email-sign-in";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
+import FormSuccess from "./form-success";
+import FormError from "./form-error";
 
 const LoginForm = () => {
   const form = useForm({
@@ -41,7 +43,8 @@ const LoginForm = () => {
 
   const { execute, status } = useAction(emailSignIn, {
     onSuccess({ data }) {
-      console.log(data);
+      if (data?.error) setError(data.error);
+      if (data?.success) setSuccess(data.success);
     },
   });
 
@@ -114,6 +117,8 @@ const LoginForm = () => {
           </Button>
         </Field>
       </form>
+      {success && <FormSuccess message={success} />}
+      {error && <FormError message={error} />}
       <Button type="button" className="p-0" variant="link">
         <Link href="/auth/reset-password">Forgot Password</Link>
       </Button>

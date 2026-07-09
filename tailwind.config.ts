@@ -1,9 +1,9 @@
 import type { Config } from "tailwindcss";
 
 function withOpacity(variableName: string): any {
-  return ({ opacityValue }: { opacityValue?: number }) => {
+  return ({ opacityValue }: { opacityValue?: number | string }) => {
     if (opacityValue !== undefined) {
-      return `color-mix(in oklch, var(${variableName}) ${opacityValue * 100}%, transparent)`;
+      return `color-mix(in oklch, var(${variableName}) calc(${opacityValue} * 100%), transparent)`;
     }
     return `var(${variableName})`;
   };

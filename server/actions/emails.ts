@@ -15,3 +15,18 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   if (error) return console.log(error);
   if (data) return data;
 };
+
+export const sendPasswordResetVerificationEmail = async (
+  email: string,
+  token: string,
+) => {
+  const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-password?token=${token}`;
+  const { data, error } = await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "Ecommerce App Password Email Reset",
+    html: `<p>Click to <a href="${confirmLink}">Reset your password</a></p>`,
+  });
+  if (error) return console.log(error);
+  if (data) return data;
+};

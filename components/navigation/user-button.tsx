@@ -77,8 +77,15 @@ const UserButton = ({ user }: { user: Session["user"] }) => {
             </DropdownMenuItem>
             {theme && (
               <DropdownMenuItem className="py-2 group font-medium cursor-pointer">
-                <div className="flex item-center gap-2">
-                  {checked ? <Sun size={14} /> : <Moon size={14} />}
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex item-center gap-2"
+                >
+                  {checked ? (
+                    <Sun size={14} className="mt-1" />
+                  ) : (
+                    <Moon size={14} className="mt-1" />
+                  )}
 
                   <p className=" mr-3 text-secondary-foreground/75   ">
                     {theme[0].toUpperCase() + theme.slice(1)} Mode

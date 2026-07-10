@@ -25,16 +25,16 @@ const AuthCard = ({
   showSocials,
 }: CardWrapperProps) => {
   return (
-    <Card className="p-6 w-96 mx-auto">
+    <Card className=" w-96 mx-auto p-0">
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
-        <CardContent>{children}</CardContent>
+        <CardContent className="p-0">{children}</CardContent>
         {showSocials && (
-          <CardFooter>
+          <CardFooter className="p-0">
             <Socials />
           </CardFooter>
         )}
-        <CardFooter>
+        <CardFooter className="p-0">
           <BackButton href={backButtonHref} label={backButtonLabel} />
         </CardFooter>
       </CardHeader>

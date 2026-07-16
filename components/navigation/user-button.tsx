@@ -18,10 +18,13 @@ import { LogOut, Moon, Settings, Sun, TruckIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Switch } from "../ui/switch";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 const UserButton = ({ user }: { user: Session["user"] }) => {
   console.log(user);
   const { setTheme, theme } = useTheme();
   const [checked, setChecked] = useState<boolean>(false);
+  const router = useRouter();
   const handleChangeTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
     setChecked(!checked);
@@ -61,14 +64,20 @@ const UserButton = ({ user }: { user: Session["user"] }) => {
               </div>
             )}
 
-            <DropdownMenuItem className="py-2 group font-medium cursor-pointer">
+            <DropdownMenuItem
+              onClick={() => router.push("/dashboard/orders")}
+              className="py-2 group font-medium cursor-pointer"
+            >
               <TruckIcon
                 size={14}
                 className="mr-3 group-hover:translate-x-1 transition-all duration-300 ease-in-out"
               />
               My orders
             </DropdownMenuItem>
-            <DropdownMenuItem className="py-2 group font-medium cursor-pointer">
+            <DropdownMenuItem
+              onClick={() => router.push("/dashboard/settings")}
+              className="py-2 group font-medium cursor-pointer"
+            >
               <Settings
                 size={14}
                 className="mr-3 group-hover:rotate-180 transition-all duration-300 ease-in-out"

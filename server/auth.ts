@@ -8,7 +8,7 @@ import { LoginSchema } from "@/types/login-schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { accounts, users } from "@/server/schema";
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: DrizzleAdapter(db),
   secret: process.env.AUTH_SECRET!,
   session: {

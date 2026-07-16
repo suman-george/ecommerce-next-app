@@ -41,6 +41,13 @@ const SettingCard = ({ session }: { session: Session }) => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [avatarUploading, setAvatarUploading] = useState(false);
 
+  const { execute, status } = useAction(setting, {
+    onSuccess({ data }) {
+      if (data?.error) setError(data.error);
+      if (data?.success) setSuccess(data.success);
+    },
+  });
+
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
@@ -53,15 +60,11 @@ const SettingCard = ({ session }: { session: Session }) => {
     },
   });
 
-  const { execute, status } = useAction(setting, {
-    onSuccess({ data }) {
-      if (data?.error) setError(data.error);
-      if (data?.success) setSuccess(data.success);
-    },
-  });
+  console.log("Form errors:", form.formState.errors);
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
     execute(values);
+    console.log("values", values);
   };
   return (
     <Card>
@@ -90,6 +93,9 @@ const SettingCard = ({ session }: { session: Session }) => {
                     autoComplete="off"
                     disabled={status === "executing"}
                   />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -110,6 +116,9 @@ const SettingCard = ({ session }: { session: Session }) => {
                     placeholder="******"
                     disabled={status === "executing" || session.user.isOAuth}
                   />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -130,6 +139,9 @@ const SettingCard = ({ session }: { session: Session }) => {
                     placeholder="******"
                     disabled={status === "executing" || session.user.isOAuth}
                   />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />

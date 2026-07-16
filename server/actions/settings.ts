@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/server/auth";
+import { auth, unstable_update } from "@/server/auth";
 import SettingsSchema from "@/types/settings-schema";
 import { error } from "console";
 import { createSafeActionClient } from "next-safe-action";
@@ -61,6 +61,12 @@ export const setting = action
         image: values.image,
       })
       .where(eq(users.id, user.user.id));
+
+    await unstable_update({
+      user: {
+        name: values.name,
+      },
+    });
 
     revalidatePath(`/dashboard/settings`);
 

@@ -57,6 +57,13 @@
       "when": 1783406421227,
       "tag": "0007_flat_scorpion",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1784187560066,
+      "tag": "0008_right_nova",
+      "breakpoints": true
     }
   ]
 }

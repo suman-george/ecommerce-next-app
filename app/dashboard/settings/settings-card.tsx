@@ -32,7 +32,7 @@ import { Switch } from "@/components/ui/switch";
 import FormSuccess from "@/components/auth/form-success";
 import FormError from "@/components/auth/form-error";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAction } from "next-safe-action/hooks";
 import { setting } from "@/server/actions/settings";
 
@@ -40,6 +40,16 @@ const SettingCard = ({ session }: { session: Session }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [avatarUploading, setAvatarUploading] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess("");
+        setError("");
+      }, 2000); // clears success message after 4 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [success, error]);
 
   const { execute, status } = useAction(setting, {
     onSuccess({ data }) {

@@ -28,6 +28,12 @@ import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import FormSuccess from "./form-success";
 import FormError from "./form-error";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const LoginForm = () => {
   const form = useForm({
@@ -35,20 +41,43 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      code: "",
     },
   });
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
+
+  console.log("showTwoFactor", showTwoFactor);
 
   const { execute, status } = useAction(emailSignIn, {
     onSuccess({ data }) {
-      if (data?.error) setError(data.error);
-      if (data?.success) setSuccess(data.success);
+      if (data?.error) {
+        setError(data.error);
+        setSuccess("");
+      }
+      if (data?.success) {
+        setSuccess(data.success);
+        setError("");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
+      }
+      if (data?.twoFactor) {
+        setShowTwoFactor(true);
+        setSuccess(data.twoFactor);
+        setError("");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
+      }
     },
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
     execute(values);
   };
 
@@ -61,46 +90,79 @@ const LoginForm = () => {
     >
       <form id="login" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup className="mt-5">
-          <Controller
-            name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="login-title">Email Address</FieldLabel>
-                <Input
-                  {...field}
-                  id="login-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Email Address"
-                  type="email"
-                  autoComplete="email"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
+          {!showTwoFactor && (
+            <>
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-title">Email Address</FieldLabel>
+                    <Input
+                      {...field}
+                      id="login-title"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Email Address"
+                      type="email"
+                      autoComplete="email"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
                 )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="login-password">Password</FieldLabel>
-                <Input
-                  {...field}
-                  id="login-password"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="********"
-                  type="password"
-                  autoComplete="current-password"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-password">Password</FieldLabel>
+                    <Input
+                      {...field}
+                      id="login-password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="********"
+                      type="password"
+                      autoComplete="current-password"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
                 )}
-              </Field>
-            )}
-          />
+              />
+            </>
+          )}
+
+          {showTwoFactor && (
+            <Controller
+              name="code"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="login-title">
+                    We have sent two factor code
+                  </FieldLabel>
+                  <InputOTP
+                    disabled={status === "executing"}
+                    maxLength={6}
+                    {...field}
+                    id="login-title"
+                  >
+                    <InputOTPGroup>
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <InputOTPSlot key={index} index={index} />
+                      ))}
+                    </InputOTPGroup>
+                  </InputOTP>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          )}
         </FieldGroup>
         <Field orientation="horizontal" className="py-4">
           <Button type="button" variant="outline" onClick={() => form.reset()}>
@@ -113,7 +175,7 @@ const LoginForm = () => {
             variant={"outline"}
             className={cn(status === "executing" ? "animate-pulse " : "")}
           >
-            Login
+            {showTwoFactor ? "Verify" : "Login"}
           </Button>
         </Field>
       </form>

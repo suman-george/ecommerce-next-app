@@ -30,3 +30,14 @@ export const sendPasswordResetVerificationEmail = async (
   if (error) return console.log(error);
   if (data) return data;
 };
+
+export const sendTwoFactorEmail = async (email: string, token: string) => {
+  const { data, error } = await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "Ecommerce App 2 factor token",
+    html: `<p>Your 2 factor token is <b>${token}</b></p>`,
+  });
+  if (error) return console.log(error);
+  if (data) return data;
+};

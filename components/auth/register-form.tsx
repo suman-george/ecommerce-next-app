@@ -45,12 +45,23 @@ const RegisterForm = () => {
 
   const { execute, status } = useAction(emailRegister, {
     onSuccess({ data }) {
-      if (data?.error) setError(data.error);
-      if (data?.success) setSuccess(data.success);
+      if (data?.error) {
+        setError(data.error);
+        setSuccess("");
+      }
+      if (data?.success) {
+        setSuccess(data.success);
+        setError("");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
+      }
     },
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    setError("");
+    setSuccess("");
     execute(values);
   };
 

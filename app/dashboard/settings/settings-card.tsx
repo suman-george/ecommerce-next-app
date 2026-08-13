@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useAction } from "next-safe-action/hooks";
 import { setting } from "@/server/actions/settings";
+import { UploadButton } from "@/app/api/uploadthing/uploadthing";
 
 const SettingCard = ({ session }: { session: Session }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -193,6 +194,32 @@ const SettingCard = ({ session }: { session: Session }) => {
               )}
             />
           </FieldGroup>
+          <UploadButton
+            endpoint="avatarUploader"
+            className=" ut-button:ring-primary items-baseline ut-button:bg-primary/75 ut-button:hover:bg-primary/100 ut-button:text-center ut-button:transition-all ut-button:duration-500 ut-label:text-secondary ut-label:hidden ut-allowed-content:hidden"
+            onUploadBegin={() => {
+              setAvatarUploading(true);
+            }}
+            onUploadError={(error) => {
+              form.setError("image", {
+                type: "uploadError",
+                message: error?.message,
+              });
+              setAvatarUploading(false);
+              return;
+            }}
+            onClientUploadComplete={(res) => {
+              form.setValue("image", res[0].url);
+              setAvatarUploading(false);
+            }}
+            content={{
+              button({ ready }) {
+                if (avatarUploading) return <div>Uploading...</div>;
+                if (ready) return <div>Change Avatar</div>;
+                return <div>Uploading...</div>;
+              },
+            }}
+          />
           <FieldGroup>
             <Controller
               name="isTwoFactorEnabled"
@@ -221,6 +248,7 @@ const SettingCard = ({ session }: { session: Session }) => {
               )}
             />
           </FieldGroup>
+
           <FormSuccess message={success} />
           <FormError message={error} />
           <Button disabled={status === "executing"} type="submit">

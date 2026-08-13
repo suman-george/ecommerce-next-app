@@ -34,12 +34,13 @@ export const emailSignIn = action
         return { error: "Please login with Google or GitHub" };
       }
 
-      const passwordMatch = await bcrypt.compare(password, existingUser.password);
+      const passwordMatch = await bcrypt.compare(
+        password,
+        existingUser.password,
+      );
       if (!passwordMatch) {
-        return { error: "Email or Password Incorrect" };
+        return { error: "Password Incorrect" };
       }
-
-      console.log(email, password, code);
 
       if (!existingUser.emailVerified) {
         const verificationToken = await generatEmailVerificationToken(email);
